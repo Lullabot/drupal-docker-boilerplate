@@ -1,0 +1,21 @@
+mysqldata:
+  build: ./docker/mysql
+  entrypoint: /bin/bash
+mysql:
+  build: ./docker/mysql
+  ports:
+   - "3306"
+  env_file: ./docker/mysql/.env
+  volumes_from:
+    - mysqldata
+web:
+  build: ./docker/web
+  ports:
+   - "80"
+  env_file: ./docker/web/.env
+  volumes:
+   - .:/var/www/mirror
+   - ~/.ssh:/root/.ssh
+   - ./volumes/xdebug_profiler:/root/xdebug_profiler
+  links:
+   - mysql:mysql

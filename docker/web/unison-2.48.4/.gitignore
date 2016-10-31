@@ -1,0 +1,11 @@
+/*.cmx
+/*.cmi
+/*.cmo
+/mkProjectInfo
+/unison
+/unison.exe
+/unison-fsmonitor
+/unison-fsmonitor.exe
+/TAGS
+/Makefile.ProjectInfo
+/unison.tmproj
