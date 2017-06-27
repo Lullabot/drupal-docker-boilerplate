@@ -1,0 +1,24 @@
+commands:
+  - command: site:install
+    options:
+      langcode: en
+      db-type: mysql
+      db-host: mariadb
+      db-name: drupal
+      db-user: drupal
+      db-pass: drupal
+      db-port: 3306
+      site-name: 'Drupal 8 site'
+      site-mail: admin@example.org
+      account-name: admin
+      account-mail: admin@example.org
+      account-pass: admin
+    arguments:
+      profile: standard
+  - command: module:install
+    arguments:
+      - token
+      - metatag
+      - pathauto
+      - devel
+      - kint

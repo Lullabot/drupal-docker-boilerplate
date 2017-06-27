@@ -1,0 +1,7 @@
+# Set Docker-Compose environment variables here.
+
+# Set prefix for the container names, also used for the browser path.
+COMPOSE_PROJECT_NAME=drupal8
+
+# Uncomment below on Windows machines
+#COMPOSE_CONVERT_WINDOWS_PATHS=true

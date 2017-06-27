@@ -1,0 +1,13 @@
+version: "2"
+
+syncs:
+  docker-sync:
+    src: './'
+    sync_userid: '82'
+    sync_excludes: ['.gitignore', '.git/', '.idea/']
+    volumes:
+      - docker-sync:/var/www/html
+#  docker-sync-another-project:
+#    src: '/absolute/path/to/project/codebase'
+#    sync_userid: '82'
+#    sync_excludes: ['.gitignore', '.git/', '.idea/']
