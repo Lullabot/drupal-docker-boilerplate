@@ -8,10 +8,6 @@ version: "2"
 
 services:
 
-  php:
-    volumes:
-      - ~/.ssh:/root/.ssh
-
   traefik:
     command: -c /dev/null --web --docker --logLevel=INFO --defaultEntryPoints='https' --entryPoints="Name:https Address::443 TLS:/certs/cert.pem,/certs/key.pem" --entryPoints="Name:http Address::80 Redirect.EntryPoint:https"
     ports:
