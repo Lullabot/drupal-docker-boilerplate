@@ -1,0 +1,24 @@
+# Use Docker-Sync for Mac OSX performance
+# see https://docker4drupal.readthedocs.io/en/latest/macos/
+# 1) Install Docker-Sync
+# 2) Copy /docker/docker-sync.yml to /docker-sync.yml
+# 3) Create an empty folder called /docker-sync
+# 4) Copy these contents to /docker-compose.override.yml
+
+version: "2"
+
+services:
+
+  php:
+    volumes:
+      - docker-sync:/var/www/html
+  nginx:
+    volumes:
+      - docker-sync:/var/www/html
+#  apache:
+#    volumes:
+#      - docker-sync:/var/www/html
+
+volumes:
+  docker-sync:
+    external: true

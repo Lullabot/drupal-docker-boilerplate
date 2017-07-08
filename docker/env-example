@@ -1,4 +1,6 @@
 # Set Docker-Compose environment variables here.
+# 1) Copy this file to top level as /.env
+# 2) Edit the values as appropriate or add other environment variables.
 
 # Set prefix for the container names, also used for the browser path.
 COMPOSE_PROJECT_NAME=drupal8

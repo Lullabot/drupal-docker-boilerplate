@@ -1,3 +1,5 @@
+# When using Docker-sync, copy this file to top level, /docker-sync.yml
+
 version: "2"
 
 syncs:

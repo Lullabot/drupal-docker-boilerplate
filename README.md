@@ -9,22 +9,37 @@ The codebase could be deployed normally to production, which can just ignore the
 1. [Composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
 2. [Docker](https://docs.docker.com/engine/installation/) (for MacOS, Windows, or Linux)
 3. [Docker-Compose](https://docs.docker.com/compose/install/) (only required for Linux, already included in Docker for MacOS and Windows)
-4. [Docker-Sync](http://docs.docker4drupal.org/en/latest/macos/) (not necessary for Linux or Windows, improves file syncing performance on MacOS)
+4. [Docker-Sync](http://docs.docker4drupal.org/en/latest/macos/) (optional, not necessary for Linux or Windows, improves file syncing performance on MacOS, not necessary on MacOS for Docker version 17.06+ where `:cached` should work just as well.)
 
 ## Configuration
 
 1. Fork this repository to create a new project.
-2. Copy `env-example` to `.env` to set an environment value for `COMPOSE_PROJECT_NAME`. This will be the machine name for the project. This name will be used as the prefix for all the Docker containers, so it should be unique among all containers that might be running on the same host. If the project name is `drupal8`, the php container name will be `drupal8_php_1`. The project name is also used in the browser url. For the same `drupal8` project name, the browser path will be `http://drupal8.docker.localhost:8000`.
+2. Copy `/docker/env-example` to `.env` to set an environment value for `COMPOSE_PROJECT_NAME`. This will be the machine name for the project. This name will be used as the prefix for all the Docker containers, so it should be unique among all containers that might be running on the same host. If the project name is `drupal8`, the php container name will be `drupal8_php_1`. The project name is also used in the browser url. For the same `drupal8` project name, the browser path will be `http://drupal8.docker.localhost:8000`.
 3. Edit configuration files as needed. These files will be used to provide localized values applicable to the containerized site:
 	- `/config/docker/new-site-install.yml` is used only if you want to install a vanilla site from scratch. Drupal Console can build a site from that file.
 	- `/drush/site-aliases/docker.aliases.drushrc.php`creates drush aliases `@docker.container` and `@docker.source`. The `container` values should be correct. Update the values in `source` to match an external site to make it easy to copy files and the database to and from that location.
 	- `drushrc.php` uses the drush aliases to create simple aliases to copy files and database from the source by executing `drush syncfiles`, `drush syncprivate`, and `drush syncdb`.
 4. To communicate with servers outside the Docker containers, the Docker-compose file passes your ssh credentials and keys through to the container as a volume, `- ~/.ssh:/root/.ssh`. You should have a ssh config file in your home directory, `./ssh/config`, that identifies the user name that matches your ssh keys. This will allow you to ssh as yourself, instead of the root user, from inside the container. For example, `/ssh/config` might look like:
 
-```
-Host example.com
-  User karen
-```
+	```
+	Host example.com
+  	User karen
+	```
+
+## Docker-Compose Overrides
+You can create a file called `/docker-compose.override.yml` that can contain overrides to the main `docker-compose.yml` file. Docker will automatically merge the contents of the two files together. The override file doesn't need to be complete, it only needs to contain the overrides. All items that contain a single value will be overridden. All items that contain multiple values will merge the values of the original and the override file.
+
+You can use this feature to set up host-specific overrides, like configuring Docker to use SSL, or using Docker-Sync on MacOS. There are examples in the /docker folder of the configuration changes that are needed. Copy one of the examples to `/docker-compose.override.yml` or create an empty file and combine any number of overrides.
+
+## SSL/HTTPS
+
+1. To set up a self-signed SSL certificate for use in local HTTPS containers do the following. All local containers can share the same certs, so this only needs to be done once:
+	
+	```
+	mk dir ~/ssl/certs
+	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ~/ssl/certs/key.pem -out ~/ssl/certs/cert.pem
+	```
+2. Copy the file `/docker/docker-compose.ssl.yml` to `/docker-compose.override.yml`, or add its contents to that file if it already exists. 	
 
 
 ## Create Site From Drupal Project
