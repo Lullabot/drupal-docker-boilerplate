@@ -122,7 +122,7 @@ If you don't already have a codebase, you can pull down a vanilla Drupal site us
 
 Edit the file `/config/docker/new-site-install.yml`. It is used only if you want to install a vanilla site from scratch. Drupal Console can build a site from that file.
 
-Start the containers (see details below), then enter the php container, cd to the `web` directory inside the container, and install a new site with Drupal Console:
+Start the containers, then enter the php container, cd to the `web` directory inside the container, and install a new site with Drupal Console:
 
 `/var/www/html/vendor/bin/drupal chain --file=/var/www/html/config/docker/new-site-install.yml`
 
