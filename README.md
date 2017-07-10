@@ -32,9 +32,10 @@ The solution to file performance problems on Mac OSX and Windows is to use [Dock
 1. Install [Docker-Sync](http://docker-sync.io).
 2. A file called `/docker-sync.yml` is included in the repository. It will be ignored if Docker-Sync is not being used. It should not need any changes unless are trying to use Docker-Sync to manage a swarm or multiple networks.
 2. Copy the file `/config/docker/docker-compose.docker-sync.yml` to `/docker-compose.override.yml` to adjust the `docker-compose` values.
-3. Execute `docker-sync start` before running `docker-compose up`.
-4. Execute `docker-sync stop` after running `docker-compose stop`.
-5. Execute `docker-sync clean` after running `docker-compose down`.
+3. Run `docker-sync` before starting or after stopping with `docker-compose`:
+	- Execute `docker-sync start` before running `docker-compose up`.
+	- Execute `docker-sync stop` after running `docker-compose stop`.
+	- Execute `docker-sync clean` after running `docker-compose down`.
 
 ## Container Operations
 
@@ -57,11 +58,11 @@ You should be able to add, delete, and edit your codebase from either inside or 
 ## Container Commands
 Use the following commands to manage the containers. The first time you `start` the containers, it may take several minutes. After that they will rely on cached copies of the images and should start very quickly. The containers will start up in the background so it's hard to tell when they're ready. You can tail the logs to see what's happening. When you see `KEEPALIVE` entries from `mailhog` the containers are ready.
 
-1. Type `docker-compose up` to launch the Docker containers.
-2. Type `docker-compose stop` to pause them without destroying the data.
-3. Type `docker-compose -v down` to completely tear down the Docker containers and their volumes, except for external volumes.
-4. Type `docker-compose logs -f --tail=1` to view and tail the latest log entries from the containers, or `docker-compose logs -f` to view and tail all log entries. With either of these, `ctl-c` will exit out of the logs.
-4. To communicate from one container to another, treat the name of the service as if it was the IP address of a remote server. For instance, to get into the database from the php container, set the host as `mariadb`, i.e.:
+- Type `docker-compose up` to launch the Docker containers.
+- Type `docker-compose stop` to pause them without destroying the data.
+- Type `docker-compose -v down` to completely tear down the Docker containers and their volumes, except for external volumes.
+- Type `docker-compose logs -f --tail=1` to view and tail the latest log entries from the containers, or `docker-compose logs -f` to view and tail all log entries. With either of these, `ctl-c` will exit out of the logs.
+- To communicate from one container to another, treat the name of the service as if it was the IP address of a remote server. For instance, to get into the database from the php container, set the host as `mariadb`, i.e.:
 
 ```
 mysql -udrupal -pdrupal -hmariadb
@@ -70,14 +71,14 @@ mysql -udrupal -pdrupal -hmariadb
 ## SSL/HTTPS
 You may want the containers to use SSL, either to test SSL operations or for consistency with the production urls.
 
-1. Set up a self-signed SSL certificate for use in local HTTPS containers. On a Mac, do the following, other operating systems may need to be handled differently. All containers using a domain like `*.docker.localhost` will be able share this cert. The cert is be stored on the host rather than in the container, so this only needs to be done once:
+- Set up a self-signed SSL certificate for use in local HTTPS containers. On a Mac, do the following, other operating systems may need to be handled differently. All containers using a domain like `*.docker.localhost` will be able share this cert. The cert is be stored on the host rather than in the container, so this only needs to be done once:
 	
-	```
-	## Make a directory for the cert.
-	mk dir ~/ssl/certs
+```
+## Make a directory for the cert.
+mk dir ~/ssl/certs
 	
-	# Create a wildcard cert.
-	openssl req \
+# Create a wildcard cert.
+openssl req \
   -newkey rsa:2048 \
   -x509 \
   -nodes \
@@ -92,12 +93,13 @@ You may want the containers to use SSL, either to test SSL operations or for con
   -sha256 \
   -days 720
 
-	# Add the cert to Mac's keychain.
-	sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ~/ssl/certs/cert.pem
+# Add the cert to Mac's keychain.
+sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ~/ssl/certs/cert.pem
 
-	```
-2. Copy the file `/docker/docker-compose.ssl.yml` to `/docker-compose.override.yml`, or add its contents to that file if it already exists. 
-3. Adjust all container urls to use `HTTPS` instead of `HTTP`.	
+```
+
+- Copy the file `/docker/docker-compose.ssl.yml` to `/docker-compose.override.yml`, or add its contents to that file if it already exists. 
+- Adjust all container urls to use `HTTPS` instead of `HTTP`.	
 
 ## Using Drush
 
@@ -110,8 +112,8 @@ Drush will be available inside the container. Drush files can be used to provide
 
 This repository provides a couple ways of populating the database inside the container. 
 
-1. The folder `/mariadb-init` will be checked when the container is spun up. If there are any SQL files in that folder, they will be executed at that time. The default repository contains a SQL file to create an empty Drupal database. Alternately, a SQL dump file could be added to that folder to populate the database from another Drupal site.
-2. If the Drush alias file has been updated with values from a source site, and SSH credentials have been set up correctly in the docker-compose file, the container can be populated using `drush sql-sync @docker.source @docker.container`
+- The folder `/mariadb-init` will be checked when the container is spun up. If there are any SQL files in that folder, they will be executed at that time. The default repository contains a SQL file to create an empty Drupal database. Alternately, a SQL dump file could be added to that folder to populate the database from another Drupal site.
+- If the Drush alias file has been updated with values from a source site, and SSH credentials have been set up correctly in the docker-compose file, the container can be populated using `drush sql-sync @docker.source @docker.container`
 
 
 ## Install Vanilla Drupal 8 Site
