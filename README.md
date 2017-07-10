@@ -20,7 +20,7 @@ Boilerplate to create new Drupal 8 projects that can be managed locally in Docke
 	```
 
 ## Docker-Compose Overrides
-You can create a file called [/docker-compose.override.yml](https://docs.docker.com/compose/extends/) that can contain overrides to the main `docker-compose.yml` file. Docker will automatically merge the contents of the two files together when you execute `docker-compose up`. The override file doesn't need to be complete, it only needs to contain the override values. Eements that contain a single value will be overridden by the override value. Elements that contain multiple values will contain the values of both the original and the override file.
+You can create a file called [/docker-compose.override.yml](https://docs.docker.com/compose/extends/) that can contain overrides to the main `docker-compose.yml` file. Docker will automatically merge the contents of the two files together when you execute `docker-compose up`. The override file doesn't need to be complete, it only needs to contain the override values. Elements that contain a single value will be overridden by the override value. Elements that contain multiple values will contain the values of both the original and the override file.
 
 You can use this feature to set up host-specific overrides, like adjusting the location of your SSH files, configuring Docker to use SSL, or using Docker-Sync on MacOSX or Windows. There are examples in the `/config/docker` folder of some of the configuration changes that are needed. Copy one of the examples to `/docker-compose.override.yml` or create an empty file and combine any number of overrides in that file.
 
@@ -58,11 +58,11 @@ You should be able to add, delete, and edit your codebase from either inside or 
 ## Container Commands
 Use the following commands to manage the containers. The first time you `start` the containers, it may take several minutes. After that they will rely on cached copies of the images and should start very quickly. The containers will start up in the background so it's hard to tell when they're ready. You can tail the logs to see what's happening. When you see `KEEPALIVE` entries from `mailhog` the containers are ready.
 
-- Type `docker-compose up` to launch the Docker containers.
+- Type `docker-compose -d up` to launch the Docker containers. The `-d` means it will start in detached mode, allowing you to continue to use that terminal window while the containers run in the background.
 - Type `docker-compose stop` to pause them without destroying the data.
 - Type `docker-compose -v down` to completely tear down the Docker containers and their volumes, except for external volumes.
-- Type `docker-compose logs -f --tail=1` to view and tail the latest log entries from the containers, or `docker-compose logs -f` to view and tail all log entries. With either of these, `ctl-c` will exit out of the logs.
-- To communicate from one container to another, treat the name of the service as if it was the IP address of a remote server. For instance, to get into the database from the php container, set the host as `mariadb`, i.e.:
+- Type `docker-compose logs -f --tail=1` to view and tail the latest log entries from the containers, or `docker-compose logs -f` to view and tail all log entries. With either of these, `ctl-c` will exit out of the logs without actually stopping the containers. Watching the logs is handy when first starting up so you can tell when the containers are ready, or anytime things don't seem to be working correctly.
+- To communicate from one container to another, treat the name of the service as if it was the IP address of a remote server. For instance, to get into the mariadb database from the php container, set the host as `mariadb`, i.e.:
 
 ```
 mysql -udrupal -pdrupal -hmariadb
