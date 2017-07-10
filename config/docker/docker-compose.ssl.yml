@@ -1,8 +1,5 @@
 # Add ssl support, requires access to all urls with HTTPS.
-# 1) To create certificate:
-#   $ mk dir ~/ssl/certs
-#   $ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ~/ssl/certs/key.pem -out ~/ssl/certs/cert.pem
-# 2) Copy these contents to docker-compose.override.yml
+# See README.md for more information.
 
 version: "2"
 

@@ -80,7 +80,7 @@ services:
 #      APACHE_BACKEND_HOST: php
 #      APACHE_SERVER_ROOT: /var/www/html/web
 #    volumes:
-#      - codebase:/var/www/html/web:cached
+#      - codebase:/var/www/html/web
 #    labels:
 #      - 'traefik.backend=apache'
 #      - 'traefik.port=80'
