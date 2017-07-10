@@ -1,9 +1,10 @@
 # Use Docker-Sync for Mac OSX performance
 # see https://docker4drupal.readthedocs.io/en/latest/macos/
 # 1) Install Docker-Sync
-# 2) Copy /docker/docker-sync.yml to /docker-sync.yml
-# 3) Create an empty folder called /docker-sync
-# 4) Copy these contents to /docker-compose.override.yml
+# 2) Copy this file to /docker-compose.override.yml
+# 3) Run `docker-sync start` before `docker-compose up`
+# 4) Run `docker-sync stop` after `docker-compose stop`
+# 5) Run `docker-sync clean` after `docker-compose down`
 
 version: "2"
 

@@ -1,15 +1,15 @@
 # Sensitive information #
 #########################
 # Ignore configuration files that may contain sensitive information.
-docroot/sites/*/settings*.php
+web/sites/*/settings*.php
 *.local.php
 
 # User Generated Content #
 ##########################
-docroot/files
-docroot/sites/*/files
-docroot/sites/*/private
-files-private/*
+web/files
+web/sites/*/files
+web/sites/*/private
+private/*
 
 # Compiled source #
 ###################
@@ -49,3 +49,7 @@ Thumbs.db
 # IDEs #
 ########
 .idea
+
+# Docker overrides #
+####################
+docker-compose.override.yml

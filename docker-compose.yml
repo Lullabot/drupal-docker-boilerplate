@@ -40,11 +40,10 @@ services:
       # PHP_XDEBUG_DEFAULT_ENABLE: 1
       # PHP_XDEBUG_REMOTE_CONNECT_BACK: 0         # This is needed to respect remote.host setting bellow
       # PHP_XDEBUG_REMOTE_HOST: "10.254.254.254"  # You will also need to 'sudo ifconfig lo0 alias 10.254.254.254'
-    # Persistent data for this container.
-    # See https://docs.docker.com/docker-for-mac/osxfs-caching/#tuning-with-consistent-cached-and-delegated-configurations
+    # Persistent data for this container, map host to container locations.
     volumes:
       - ~/.ssh:/root/.ssh
-      - codebase:/var/www/html:cached
+      - codebase:/var/www/html
 
   # The web container.
   nginx:
@@ -65,9 +64,8 @@ services:
       NGINX_BACKEND_HOST: php
       NGINX_SERVER_ROOT: /var/www/html/web
     # Persistent data for this container, map host to container locations.
-    # See https://docs.docker.com/docker-for-mac/osxfs-caching/#tuning-with-consistent-cached-and-delegated-configurations
     volumes:
-      - codebase:/var/www/html:cached
+      - codebase:/var/www/html
     labels:
       - "traefik.backend=nginx"
       - "traefik.port=80"
