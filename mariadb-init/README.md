@@ -1,4 +1,4 @@
-# ./mariadb-init
+# mariadb-init
 
 This folder is only used when this project is run in a Docker container with Docker-Compose. 
 

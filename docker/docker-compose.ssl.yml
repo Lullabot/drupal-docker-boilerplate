@@ -1,4 +1,4 @@
-# Add ssl support, requires access to all urls with HTTPS.
+# Add ssl support, access all urls with HTTPS.
 # See README.md for more information.
 
 version: "2"
