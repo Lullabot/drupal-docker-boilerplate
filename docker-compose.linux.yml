@@ -12,13 +12,11 @@ services:
   php:
     volumes:
       - codebase:/var/www/html
-      - ./files:/mnt/files
       - ~/.ssh:/root/.ssh
 
   nginx:
     volumes:
       -codebase:/var/www/html
-      - ./files:/mnt/files
 
 ## Uncomment the following to enable HTTPS/ssl
 #  traefik:

@@ -1,4 +1,4 @@
-# When using Docker-sync, copy this file to top level, /docker-sync.yml
+# See https://github.com/EugenMayer/docker-sync/blob/master/example/docker-sync.yml
 
 version: "2"
 
@@ -6,7 +6,7 @@ syncs:
   docker-sync:
     src: './'
     sync_userid: '82'
-    sync_excludes: ['.gitignore', '.git/', '.idea/']
+    sync_excludes: ['private','mariadb-init','.gitignore','.git/','.idea/','.DS_Store']
     volumes:
       - docker-sync:/var/www/html
 #  docker-sync-another-project:
