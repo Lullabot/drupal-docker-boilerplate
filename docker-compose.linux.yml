@@ -1,0 +1,32 @@
+# Example basic docker-compose.override file.
+# See README.md for more information.
+
+version: "2"
+
+services:
+
+  mariadb:
+    volumes:
+      # See README.md in /docker/mariadb-init.
+      - ./mariadb-init:/docker-entrypoint-initdb.d  
+  php:
+    volumes:
+      - codebase:/var/www/html
+      - ./files:/mnt/files
+      - ~/.ssh:/root/.ssh
+
+  nginx:
+    volumes:
+      -codebase:/var/www/html
+      - ./files:/mnt/files
+
+## Uncomment the following to enable HTTPS/ssl
+#  traefik:
+#    command: -c /dev/null --web --docker --logLevel=INFO --defaultEntryPoints='https' --entryPoints="Name:https Address::443 TLS:/certs/cert.pem,/certs/key.pem" --entryPoints="Name:http Address::80 Redirect.EntryPoint:https"
+#    ports:
+#      - '4443:443'
+#    volumes:
+#      - ~/ssl/certs:/certs/
+
+volumes:
+  codebase

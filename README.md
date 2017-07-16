@@ -1,6 +1,6 @@
 # Drupal Boilerplate
 
-Boilerplate to create new Drupal 8 projects that can be managed locally in Docker containers. It uses  [Docker4Drupal](https://github.com/wodby/docker4drupal) for the Docker configuration. You can also use [Drupal Composer Project](https://github.com/drupal-composer/drupal-project) to create a Drupal installation from scratch.
+Boilerplate to create new Drupal 8 projects that can be managed locally in Docker containers. It uses  [Docker4Drupal](https://github.com/wodby/docker4drupal) for the Docker configuration. You can also use [Drupal Composer Project](https://github.com/drupal-composer/drupal-project) to create a Drupal installation from scratch. 
 
 ## Prerequisites
 
@@ -25,34 +25,45 @@ Boilerplate to create new Drupal 8 projects that can be managed locally in Docke
 
 
 ## Docker-Compose Overrides
-Docker-compose is configured differently depending on the capabilities of the host operating system. When sharing a repository we want to keep the host-specific configuration out of the `docker-compose` file.
+Docker-compose is configured differently depending on the capabilities of the host operating system. When sharing a repository we want to keep the host-specific configuration out of the main `docker-compose` file, in particular the `volumes` mapping, since that will vary between dev/stage/prod and local development.
 
-You can create a file called [/docker-compose.override.yml](https://docs.docker.com/compose/extends/) that can contain overrides to the main `docker-compose.yml` file. Docker will automatically merge the contents of the two files together when you execute `docker-compose up`.
+You can create files that contain [docker-compose overrides](https://docs.docker.com/compose/extends/) to  `docker-compose.yml`. You can use this feature to set up host-specific overrides. The override files don't need to be complete `docker-compose` files, they only need to contain the override values. Docker can merge the contents of multiple files together when you execute `docker-compose up`, if you identify the names of the files you want to merge. For instance, to run this on a Mac you could do:
 
-The override file doesn't need to be a complete `docker-compose` file, it only needs to contain the override values.
+```
+docker-compose -f docker-compose.yml -f docker-compose.mac.yml up -d
+```
 
-You can use this feature to set up host-specific overrides. There are examples in the `/docker` folder of some of the configuration changes that could be used. Copy one of the examples to `/docker-compose.override.yml` or create an empty file and combine any number of overrides in that file.
 
-Similarly to `settings.local.php` in a Drupal installation, this localized file is not stored in the shared repository, allowing each user to adjust configuration as necessary for their own environment.
+To make things even easier, you can just create a copy of the override file you want to use and name the copy `docker-compose.override.yml`. If you do that you can simplify the command to the following, since Docker Comose's default behavior is to merge a file called `docker-compose.yml` with a file called `docker-compose.override.yml`:
+
+```
+docker-compose up -d
+```
+
 
 See information below on how to adjust configuration for `SSH`, `HTTPS/SSL`, or `Docker-Sync for MacOSX or Windows`.
 
-If you don't need any overrides, don't create the file. Docker will choke on an empty `docker-compose.override.yml` file.
 
 ## Host Operations
-Once you have configured `docker-compose.overide.yml`, if needed, and prepared the database and files from the directions below, use the following commands to manage the containers. All are run from the root of the docker repository on the host machine. 
+Once you have prepared the database and files from the directions below, use the following commands to manage the containers. All are run from the root of the docker repository on the host machine. 
 
 The first time you `start` the containers, it may take several minutes. After that they will rely on cached copies of the images and should start very quickly. The containers will start up in the background so it's hard to tell when they're ready. You can tail the logs to see what's happening. When you see `KEEPALIVE` entries from `mailhog` the containers are ready.
 
-- Type `docker-compose up -d` to launch the Docker containers. The `-d` means it will start in detached mode, allowing you to continue to use that terminal window while the containers run in the background.
-- Type `docker-compose stop` to pause them without destroying the data.
+- To launch the Docker containers on a Mac, type 
+
+	```
+	docker-compose up -d
+	```
+	
+	Add and adjust the override file names to that command, if necessary, as explained above. If you leave out the `-d` you'll have to keep that window open as long as you want the containers to live. Closing the window or doing `ctl-c` will stop the containers.  Adding the `-d` means it will start in detached mode, allowing you to continue to use that terminal window while the containers run in the background. 
+- Type `docker-compose stop` to pause the containers without destroying the data.
 - Type `docker-compose down -v` to completely tear down the Docker containers and their volumes.
-- Type `docker-compose logs -f` to view and tail the log entries from the containers. To stop viewing the logs, use `ctl-c` to exit out of the logs without actually stopping the containers..
+- Type `docker-compose logs -f` to view and follow the log entries from the containers. To stop viewing the logs, use `ctl-c` to exit out of the logs (this will not stop the containers, just stop following the logs).
 - To communicate from one container to another, treat the name of the service as if it was the IP address of a remote server. For instance, to get into the mariadb database from the php container, set the host as `mariadb`, i.e.:
 
-```
-mysql -udrupal -pdrupal -hmariadb
-```
+	```
+	mysql -udrupal -pdrupal -hmariadb
+	```
 
 ## Container Operations
 
@@ -70,19 +81,17 @@ cd web
 drush st
 ```
 
-To view the site in a browser, navigate to the following url, replacing `[COMPOSE_PROJECT_NAME]`  with the project name you put in the `.env` file. With some browsers and operating systems any path ending in `localhost` will work automatically, otherwise you may need update your `hosts` file so your browser will know it's a local url. For instance, if `COMPOSE_PROJECT_NAME=drupal8`:
+To view the site in a browser, navigate to the following url, replacing `[COMPOSE_PROJECT_NAME]`  with the project name you put in the `.env` file. With some browsers and operating systems any path ending in `localhost` will work automatically, otherwise you may need update your `hosts` file so your browser will know it's a local url. For instance, if `COMPOSE_PROJECT_NAME=drupal8`, the browser url would be:
 
 ```
 http://drupal8.docker.localhost:8000
 ```
-You should be able to add, delete, and edit your codebase from either inside or outside the containers, and immediately see the results inside your containers. Permanent changes should made in the host rather than the container, and can be saved using `git commit` on the host.
 
 ## Docker-Sync for Mac OSX and Windows
 The solution to file performance problems on Mac OSX and Windows is to use [Docker-Sync](http://docker-sync.io). To adjust the repository for Docker-Sync, do the following:
 
 1. Install [Docker-Sync](http://docker-sync.io).
-2. A file called `/docker-sync.yml` is included in the repository. It will be ignored if Docker-Sync is not being used. It should not need any changes unless are trying to use Docker-Sync to manage a swarm or multiple networks.
-2. Copy the file `/docker/docker-compose.docker-sync.yml` to `/docker-compose.override.yml` to adjust the `docker-compose` values.
+2. Use the file `/docker-compose.mac.yml` when running `docker-compose up`, or copy it to `docker-compose.override.yml`.
 3. Run `docker-sync` before starting or after stopping:
 	- Execute `docker-sync start` before running `docker-compose up`.
 	- Execute `docker-sync stop` after running `docker-compose stop`.
@@ -92,7 +101,7 @@ The solution to file performance problems on Mac OSX and Windows is to use [Dock
 
 There are a couple ways to populate the database inside the container. 
 
-- The folder `/mariadb-init` will be checked when the container is spun up. If there are any SQL files in that folder, they will be executed at that time. The default repository contains a SQL file to create an empty Drupal database. Alternately, a SQL dump file could be added to that folder to populate the database from another Drupal site.
+- The folder `/mariadb-init` will be checked when the container is spun up. If there are any SQL files in that folder, they will be executed at that time. The default repository contains a SQL file to create an empty Drupal database. Alternately, a SQL dump file could be added to that folder to populate the database.
 - If the Drush alias file has been updated with values from a source site, and SSH credentials have been set up correctly in the docker-compose file, the container can be populated using drush inside the container: `drush sql-sync @docker.source @docker.container`
 
 
@@ -100,14 +109,15 @@ There are a couple ways to populate the database inside the container.
 
 There are a couple ways to populate the files inside the container:
 
-- Copy the public files directly into `web/sites/default/files`.
-- Copy the files into `/files/public` and create a relative symlink to `sites/default/files`. The relative symlink is necessary since the absolute path will be different inside the container. For instance,
+- Copy public files into `/files/public`, and private files into `/files/private`, then create a relative symlink for `sites/default/files`. The relative symlink is necessary since the absolute path will be different inside the container. For instance,
+
 
 	```
-	cd sites/default
+	cd web/sites/default
 	ln -s ../../../files/public files
 	``` 
-- If the Drush alias file has been updated with values from a source site, and SSH credentials have been set up correctly in the docker-compose file, don't copy the files in at all, just create the symlink or add an empty files directory, then wait until the container has been started and move into it and populate the files with:
+	
+- If the Drush alias file has been updated with values from a source site, and SSH credentials have been set up correctly in the docker-compose file, don't copy the files in at all, just create the symlink, then wait until the container has been started and move into it and populate the files with:
 
 	```
 	drush rsync @docker.source:%files/ @docker.container:%files`
@@ -122,7 +132,7 @@ Host example.com
 User karen
 ```
 
-If that is not the correct location for your SSH credentials, override the `docker-compose.yml` value in `docker-compose.override.yml`.
+If that is not the correct location for your SSH credentials, override these values in a custom `docker-compose` override file.
 
 ## Using Drush in the Container
 
@@ -162,7 +172,7 @@ sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keyc
 
 ```
 
-- Copy the file `/docker/docker-compose.ssl.yml` to `/docker-compose.override.yml`, or add its contents to that file if it already exists. 
+- Uncomment the SSL configuration in `docker-compose.mac.yml` or `docker-compose.linux.yml`. 
 - Adjust all container urls to use `HTTPS` instead of `HTTP`, and the port `4443` instead of `8000`, for instance:
 - HTTP: `http://drupal8.docker.localhost:8000`
 - HTTPS: `https://drupal8.docker.localhost:4443`
