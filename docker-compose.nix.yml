@@ -16,7 +16,7 @@ services:
 
   nginx:
     volumes:
-      -codebase:/var/www/html
+      - codebase:/var/www/html
 
 ## Uncomment the following to enable HTTPS/ssl
 #  traefik:
@@ -27,4 +27,5 @@ services:
 #      - ~/ssl/certs:/certs/
 
 volumes:
-  codebase
+  codebase:
+  

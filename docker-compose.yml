@@ -3,22 +3,15 @@
 version: "2"
 
 services:
-  # The database container.
   mariadb:
     image: wodby/mariadb:10.1-2.3.3
-    # Pass environment variables to the container.
     environment:
       # See all available mariadb variables at https://github.com/wodby/mariadb.
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: drupal
       MYSQL_USER: drupal
       MYSQL_PASSWORD: drupal
-    # Persistent data for this container.
-    volumes:
-      # See README.md in /docker/mariadb-init.
-      - ./mariadb-init:/docker-entrypoint-initdb.d  
 
-  # The php container.
   php:
 # 2. Images without Drupal – wodby/drupal-php:[PHP_VERSION]-[STABILITY_TAG].
     image: wodby/drupal-php:7.1-2.4.2
@@ -41,7 +34,6 @@ services:
       # PHP_XDEBUG_REMOTE_CONNECT_BACK: 0         # This is needed to respect remote.host setting bellow
       # PHP_XDEBUG_REMOTE_HOST: "10.254.254.254"  # You will also need to 'sudo ifconfig lo0 alias 10.254.254.254'
 
-  # The web container.
   nginx:
 # wodby/drupal-nginx:[DRUPAL_VERSION]-[NGINX_VERSION]-[STABILITY_TAG].
     image: wodby/drupal-nginx:8-1.13-2.4.0
@@ -52,7 +44,6 @@ services:
 #    image: wodby/drupal-nginx:6-1.12-2.4.0
     depends_on:
       - php
-    # Pass environment variables to the container.
     environment:
       # See all available NGINX variables at https://github.com/wodby/php.
       NGINX_STATIC_CONTENT_OPEN_FILE_CACHE: "off"

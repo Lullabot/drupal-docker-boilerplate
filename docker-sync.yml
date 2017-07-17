@@ -9,7 +9,3 @@ syncs:
     sync_excludes: ['private','mariadb-init','.gitignore','.git/','.idea/','.DS_Store']
     volumes:
       - docker-sync:/var/www/html
-#  docker-sync-another-project:
-#    src: '/absolute/path/to/project/codebase'
-#    sync_userid: '82'
-#    sync_excludes: ['.gitignore', '.git/', '.idea/']

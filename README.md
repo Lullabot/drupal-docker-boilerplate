@@ -109,6 +109,7 @@ There are a couple ways to populate the database inside the container.
 
 There are a couple ways to populate the files inside the container:
 
+- Copy public files directly into `/web/sites/default/files` and private files into `/files/private`.
 - Copy public files into `/files/public`, and private files into `/files/private`, then create a relative symlink for `sites/default/files`. The relative symlink is necessary since the absolute path will be different inside the container. For instance,
 
 
@@ -117,7 +118,7 @@ There are a couple ways to populate the files inside the container:
 	ln -s ../../../files/public files
 	``` 
 	
-- If the Drush alias file has been updated with values from a source site, and SSH credentials have been set up correctly in the docker-compose file, don't copy the files in at all, just create the symlink, then wait until the container has been started and move into it and populate the files with:
+- If the Drush alias file has been updated with values from a source site, and SSH credentials have been set up correctly in the docker-compose file, don't copy the files in at all, just create the files directory, then wait until the container has been started and move into it and populate the files with:
 
 	```
 	drush rsync @docker.source:%files/ @docker.container:%files`
@@ -172,7 +173,7 @@ sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keyc
 
 ```
 
-- Uncomment the SSL configuration in `docker-compose.mac.yml` or `docker-compose.linux.yml`. 
+- Uncomment the SSL configuration in `docker-compose.mac.yml` or `docker-compose.nix.yml`. 
 - Adjust all container urls to use `HTTPS` instead of `HTTP`, and the port `4443` instead of `8000`, for instance:
 - HTTP: `http://drupal8.docker.localhost:8000`
 - HTTPS: `https://drupal8.docker.localhost:4443`
